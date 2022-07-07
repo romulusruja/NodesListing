@@ -6,9 +6,9 @@ public class HostConfiguration
 
     public string? Hostname { get; set; }
 
-    public string? OnionServicePort { get; set; }
+    public int? OnionServicePort { get; set; }
 
-    public string? DirectoryServicePort { get; set; }
+    public int? DirectoryServicePort { get; set; }
 
     public Node? Node { get; set; }
 }
