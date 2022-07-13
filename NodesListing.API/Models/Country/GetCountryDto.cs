@@ -2,9 +2,9 @@
 
 namespace NodesListing.API.Models.Country;
 
-public class GetCountryDto: BaseCountryDto
-{
-}
+#nullable disable
+
+public class GetCountryDto: BaseCountryDto { }
 
 public class GetCountryDetailsDto: BaseCountryDto
 {

@@ -15,10 +15,8 @@ public class MapperConfig: Profile
         CreateMap<Node, GetNodeDetailsDto>().ReverseMap();
         CreateMap<Node, UpdateNodeDto>().ReverseMap();
 
-        CreateMap<Country, CreateCountryDto>().ReverseMap();
         CreateMap<Country, GetCountryDto>().ReverseMap();
         CreateMap<Country, GetCountryDetailsDto>().ReverseMap();
-        CreateMap<Country, UpdateCountryDto>().ReverseMap();
 
         CreateMap<HostConfiguration, HostConfigurationDto>().ReverseMap();
     }
