@@ -4,5 +4,5 @@ namespace NodesListing.API.Contracts;
 
 public interface ICountriesRepository : IGenericRepository<Country>
 {
-    Task<Country> GetDetails(string id);
+    Task<Country?> GetDetails(string id);
 }

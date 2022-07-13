@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var connectionString = builder.Configuration.GetConnectionString("NodeListingDbConnectionString");
+
 builder.Services.AddDbContext<NodeListingDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
@@ -32,7 +33,9 @@ builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
+builder.Services.AddScoped<INodesRepository, NodesRepository>();
 
 var app = builder.Build();
 

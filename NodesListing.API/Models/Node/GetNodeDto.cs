@@ -1,11 +1,17 @@
-﻿namespace NodesListing.API.Models.Node;
+﻿using NodesListing.API.Models.HostConfiguration;
 
-public class GetNodeDto
+namespace NodesListing.API.Models.Node;
+
+#nullable disable
+
+public class GetNodeDto : BaseNodeDto
 {
-    public string Address { get; set; }
-
     public string PublicKey { get; set; }
-
-    public string CountryCode { get; set; }
 }
 
+public class GetNodeDetailsDto: BaseNodeDto
+{
+    public string PublicKey { get; set; }
+
+    public HostConfigurationDto HostConfiguration { get; set; }
+}

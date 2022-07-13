@@ -1,12 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NodesListing.API.Models.HostConfiguration;
+using System.ComponentModel.DataAnnotations;
 
 namespace NodesListing.API.Models.Node;
 
-public class CreateNodeDto
+#nullable disable
+
+public class CreateNodeDto: BaseNodeDto
 {
     [Required]
     public string PublicKey { get; set; }
 
-    public string CountryCode { get; set; }
+    [Required]
+    public HostConfigurationDto HostConfiguration { get; set; }
 }
-

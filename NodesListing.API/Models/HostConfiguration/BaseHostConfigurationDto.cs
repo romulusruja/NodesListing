@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NodesListing.API.Data;
+namespace NodesListing.API.Models.HostConfiguration;
 
-public class HostConfiguration
+#nullable disable
+
+public class HostConfigurationDto
 {
-    public int Id { get; set; }
-
     [Required]
     public string Hostname { get; set; }
 
@@ -14,6 +14,5 @@ public class HostConfiguration
 
     [Required]
     public int DirectoryServicePort { get; set; }
-
-    public Node? Node { get; set; }
 }
+

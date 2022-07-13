@@ -9,7 +9,8 @@ public class Country
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public string Code { get; set; }
 
-    public string? Name { get; set; }
+    [Required]
+    public string Name { get; set; }
 
     public virtual IList<Node>? Nodes { get; set; }
 }

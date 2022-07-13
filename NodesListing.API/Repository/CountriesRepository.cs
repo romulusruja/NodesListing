@@ -13,8 +13,13 @@ public class CountriesRepository : GenericRepository<Country>, ICountriesReposit
         _context = context;
     }
 
-    public async Task<Country> GetDetails(string code)
+    public async Task<Country?> GetDetails(string code)
     {
+        if(_context.Countries == null)
+        {
+            return null;
+        }
+
         return await _context.Countries.Include(q => q.Nodes).FirstOrDefaultAsync(q => q.Code == code);
     }
 }

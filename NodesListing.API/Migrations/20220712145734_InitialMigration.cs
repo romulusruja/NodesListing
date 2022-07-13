@@ -13,7 +13,7 @@ namespace NodesListing.API.Migrations
                 columns: table => new
                 {
                     Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,9 +26,9 @@ namespace NodesListing.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Hostname = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OnionServicePort = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DirectoryServicePort = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Hostname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OnionServicePort = table.Column<int>(type: "int", nullable: false),
+                    DirectoryServicePort = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,9 +40,9 @@ namespace NodesListing.API.Migrations
                 columns: table => new
                 {
                     Address = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CountryCode = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    HostConfigurationId = table.Column<int>(type: "int", nullable: true)
+                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CountryCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    HostConfigurationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,12 +51,14 @@ namespace NodesListing.API.Migrations
                         name: "FK_Nodes_Countries_CountryCode",
                         column: x => x.CountryCode,
                         principalTable: "Countries",
-                        principalColumn: "Code");
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Nodes_HostConfigurations_HostConfigurationId",
                         column: x => x.HostConfigurationId,
                         principalTable: "HostConfigurations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -68,8 +70,7 @@ namespace NodesListing.API.Migrations
                 name: "IX_Nodes_HostConfigurationId",
                 table: "Nodes",
                 column: "HostConfigurationId",
-                unique: true,
-                filter: "[HostConfigurationId] IS NOT NULL");
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

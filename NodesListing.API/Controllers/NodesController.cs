@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NodesListing.API.Contracts;
 using NodesListing.API.Data;
 using NodesListing.API.Models.Node;
 
@@ -15,71 +11,57 @@ namespace NodesListing.API.Controllers
     [ApiController]
     public class NodesController : ControllerBase
     {
-        private readonly NodeListingDbContext _context;
+        private readonly INodesRepository _nodesRepository;
         private readonly IMapper _mapper;
 
-        public NodesController(NodeListingDbContext context, IMapper mapper)
+        public NodesController(IMapper mapper, INodesRepository nodesRepository)
         {
-            _context = context;
+            _nodesRepository = nodesRepository;
             _mapper = mapper;
         }
 
         // GET: api/Nodes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Node>>> GetNodes()
+        public async Task<ActionResult<IEnumerable<GetNodeDto>>> GetNodes()
         {
-          if (_context.Nodes == null)
-          {
-              return NotFound();
-          }
-            return await _context.Nodes.ToListAsync();
+            var nodes = await _nodesRepository.GetAllAsync();
+            
+            return Ok(_mapper.Map<List<GetNodeDto>>(nodes));
         }
 
         // GET: api/Nodes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Node>> GetNode(string id)
+        [HttpGet("{address}")]
+        public async Task<ActionResult<GetNodeDetailsDto>> GetNode(string address)
         {
-          if (_context.Nodes == null)
-          {
-              return NotFound();
-          }
-            var node = await _context.Nodes.FindAsync(id);
+            var node = await _nodesRepository.GetDetailsAsync(address);
 
             if (node == null)
             {
                 return NotFound();
             }
 
-            return node;
+            return Ok(_mapper.Map<GetNodeDetailsDto>(node));
         }
 
         // PUT: api/Nodes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutNode(string id, Node node)
+        [HttpPut("{address}")]
+        public async Task<IActionResult> PutNode(string address, UpdateNodeDto updateNodeDto)
         {
-            if (id != node.Address)
+            if (address != updateNodeDto.Address)
             {
                 return BadRequest();
             }
 
-            _context.Entry(node).State = EntityState.Modified;
+            var node = await _nodesRepository.GetAsync(address);
 
-            try
+            if(node == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NodeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            _mapper.Map(updateNodeDto, node);
+            await _nodesRepository.UpdateAsync(node);
 
             return NoContent();
         }
@@ -87,59 +69,47 @@ namespace NodesListing.API.Controllers
         // POST: api/Nodes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Node>> PostNode(CreateNodeDto createNodeDto)
+        public async Task<ActionResult<CreateNodeDto>> PostNode(CreateNodeDto createNodeDto)
         {
-            if (_context.Nodes == null)
-            {
-                return Problem("Entity set 'NodeListingDbContext.Nodes'  is null.");
-            }
-            
-            // ToDo: calculate address based on public key;
-            var node = _mapper.Map<Node>(createNodeDto);
-            _context.Nodes.Add(node);
-            
             try
             {
-                await _context.SaveChangesAsync();
+                var node = _mapper.Map<Node>(createNodeDto);
+                var record = _mapper.Map<CreateNodeDto>(await _nodesRepository.AddAsync(node));
+
+                return CreatedAtAction("GetNode", new { address = record.Address }, record);
             }
             catch (DbUpdateException)
             {
-                if (NodeExists(node.Address))
+                if (await NodeExists(createNodeDto.Address))
                 {
                     return Conflict();
                 }
                 else
                 {
-                    throw;
+                    return StatusCode(500);
                 }
             }
-
-            return CreatedAtAction("GetNode", new { id = node.Address }, node);
         }
 
         // DELETE: api/Nodes/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteNode(string id)
+        [HttpDelete("{address}")]
+        public async Task<IActionResult> DeleteNode(string address)
         {
-            if (_context.Nodes == null)
-            {
-                return NotFound();
-            }
-            var node = await _context.Nodes.FindAsync(id);
-            if (node == null)
+            var record = await _nodesRepository.GetAsync(address);
+
+            if(record == null)
             {
                 return NotFound();
             }
 
-            _context.Nodes.Remove(node);
-            await _context.SaveChangesAsync();
+            await _nodesRepository.RemoveAllNodeDetailsAsync(record);
 
             return NoContent();
         }
 
-        private bool NodeExists(string id)
+        private async Task<bool> NodeExists(string address)
         {
-            return (_context.Nodes?.Any(e => e.Address == id)).GetValueOrDefault();
+            return await _nodesRepository.Exists(address);
         }
     }
 }

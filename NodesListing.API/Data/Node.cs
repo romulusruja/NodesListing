@@ -9,15 +9,16 @@ public class Node
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public string Address { get; set; }
 
-    public string? PublicKey { get; set; }
+    [Required]
+    public string PublicKey { get; set; }
 
     [ForeignKey(nameof(CountryCode))]
-    public string? CountryCode { get; set; }
+    public string CountryCode { get; set; }
 
     public Country? Country { get; set; }
 
     [ForeignKey(nameof(HostConfigurationId))]
-    public int? HostConfigurationId { get; set; }
+    public int HostConfigurationId { get; set; }
 
     public HostConfiguration? HostConfiguration { get; set; }
 }
