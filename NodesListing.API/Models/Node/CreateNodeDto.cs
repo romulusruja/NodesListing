@@ -11,5 +11,5 @@ public class CreateNodeDto: BaseNodeDto
     public string PublicKey { get; set; }
 
     [Required]
-    public HostConfigurationDto HostConfiguration { get; set; }
+    public GetHostConfigurationDto HostConfiguration { get; set; }
 }

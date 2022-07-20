@@ -36,6 +36,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
 builder.Services.AddScoped<INodesRepository, NodesRepository>();
+builder.Services.AddScoped<IHostConfigurationsRepository, HostConfigurationsRepository>();
 
 var app = builder.Build();
 

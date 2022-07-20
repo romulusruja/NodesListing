@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NodesListing.API.Data;
+namespace NodesListing.API.Models.HostConfiguration;
 
-public class HostConfiguration
+public class UpdateHostConfigurationDto
 {
-    public int Id { get; set; }
+    [Required]
+    public int? Id { get; set; }
 
     public string? Hostname { get; set; }
 
     public int? OnionServicePort { get; set; }
 
     public int? DirectoryServicePort { get; set; }
-
-    public Node? Node { get; set; }
 }

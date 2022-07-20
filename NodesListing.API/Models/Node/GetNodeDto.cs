@@ -13,5 +13,5 @@ public class GetNodeDetailsDto: BaseNodeDto
 {
     public string PublicKey { get; set; }
 
-    public HostConfigurationDto HostConfiguration { get; set; }
+    public GetHostConfigurationDto HostConfiguration { get; set; }
 }
